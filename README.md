@@ -1,1 +1,1 @@
-# SQL-example
+# SQL-projects
