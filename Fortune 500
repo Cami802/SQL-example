@@ -1,0 +1,27 @@
+SELECT * FROM fortune_companies;
+
+--Group the data in a new way using a CASE statement.
+SELECT company_name, industry,
+CASE WHEN revenue>400 THEN "good_treatment"
+WHEN revenue>200 THEN "normal_treatment"
+ELSE "not_good_treatment" 
+END AS "company_treatment"
+FROM fortune_companies
+;
+
+--Use a HAVING clause to determine something interesting about the data per category.
+SELECT company_name, COUNT(industry)
+FROM fortune_companies GROUP BY company_name
+HAVING COUNT(healthcare_benefits)=1;
+
+--Use logical operators like AND or OR to filter the data in an interesting way.
+SELECT company_name, industry, healthcare_benefits
+FROM fortune_companies
+WHERE avg_employee_tenure>7 AND maternity_leave_weeks>7;
+
+--Use an aggregate function like AVG, SUM, COUNT, MAX, and/or MIN to return summary statistics about the data.
+SELECT company_name, MAX(revenue), COUNT(avg_employee_tenure)
+FROM fortune_companies
+ORDER BY MAX(revenue)asc; 
+
+
