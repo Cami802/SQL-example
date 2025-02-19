@@ -64,3 +64,52 @@ FROM BIT_DB.FebSales Feb
 WHERE location LIKE '%Los Angeles%'
 GROUP BY Product
 ;
+-----------------------------------------------------------------------
+--1
+SELECT distinct location, COUNT(orderID)
+FROM BIT_DB.JanSales
+WHERE location LIKE '%New York%'
+AND length(OrderID) = 6 AND orderid <> 'Order ID'
+GROUP BY location
+HAVING COUNT(orderID) >=3;
+
+--2
+SELECT distinct Product, SUM(quantity)
+FROM BIT_DB.FebSales
+WHERE Product LIKE '%Headphones%'
+AND length(OrderID) = 6 AND orderid <> 'Order ID'
+GROUP BY Product;
+
+
+--3
+--(Quantity*price)/SUM(orderID) 
+
+SELECT sum(quantity*price)/count(cust.acctnum) avg_amt_spent
+FROM BIT_DB.FebSales Feb
+LEFT JOIN BIT_DB.customers cust
+ON Feb.orderID = cust.order_id
+WHERE length(OrderID) = 6 
+AND orderID <> 'Order ID'
+GROUP BY orderID
+;
+
+--What was the average quantity of products purchased per account in February? 
+--(Hint: just like question 3, we want the overall average, not the average for each account individually).
+SELECT * FROM BIT_DB.JanSales LIMIT 10;
+
+SELECT SUM(quantity)/COUNT(cust.acctnum) as avg_quantity
+FROM BIT_DB.FebSales FEB
+LEFT JOIN BIT_DB.customers cust
+ON FEB.orderID = cust.order_id
+WHERE length(OrderID) = 6
+AND orderID <> 'Order ID'
+
+--Which product brought in the most revenue in January and how much revenue did it bring in total?
+
+SELECT Product, SUM(Quantity*price) max_revenue
+FROM BIT_DB.JanSales JAN
+WHERE length(orderID) = 6
+AND orderID <> 'Order ID'
+GROUP BY Product
+ORDER BY SUM(quantity*price) desc
+LIMIT 1;
