@@ -54,15 +54,3 @@ SELECT artist_name, avg_popularity, 'Top Star' AS tag
 FROM CTEspotify
 WHERE avg_popularity >=90;
  
-write a list of all the bike lanes that have an average safety rating of 4.0 or higher,
-and the average safety rating for each of those bike lanes, and a label that says "Safe Lane".
- 
-WITH ctebikelane AS (
-SELECT cbl.street,
-AVG(cbl.safetyrating) AS average_safetyrating
-FROM CityBikeLanes cbl
-GROUP BY cbl.street
-)
-SELECT street, average_safetyrating, 'Safe Lane' AS label
-FROM ctebikelane
-WHERE average_safetyrating >= 4.0;
