@@ -1,0 +1,113 @@
+1 Show Customers (their full names, customer ID, and country) who are not in the US. (Hint: != or <> can be used to say "is not equal to").
+SELECT CONCAT(FirstName, ' ', LastName) as 'full name'
+, CustomerId
+, Country
+FROM chinook0.customers cust
+WHERE Country <> 'USA'
+;
+
+2 Show only the Customers from Brazil.
+SELECT CustomerId
+, CONCAT(Firstname, ' ', LastName) as 'full name'
+FROM chinook0.customers 
+WHERE Country = 'Brazil'
+
+3 Find the Invoices of customers who are from Brazil. The resulting table should show the customer's full name, Invoice ID, Date of the invoice, and billing country.
+SELECT CONCAT(FirstName, ' ', LastName) AS 'full name'
+, inv.InvoiceId
+, inv.InvoiceDate
+, inv.BillingCountry
+FROM chinook.invoices inv
+INNER JOIN chinook.customers cust
+ON inv.CustomerId = cust.CustomerId
+WHERE inv.BillingCountry = 'Brazil'
+;
+
+4 Show the Employees who are Sales Agents.
+SELECT CONCAT(FirstName, ' ', LastName) AS 'Full name', 
+Title
+FROM chinook.employees
+WHERE Title = 'Sales Support Agent';
+
+5 Find a unique/distinct list of billing countries from the Invoice table.
+SELECT distinct BillingCountry
+FROM chinook.invoices;
+
+6 Provide a query that shows the invoices associated with each sales agent. The resulting table should include the Sales Agent's full name.
+SELECT emp.LastName, emp.Firstname, inv.InvoiceId
+FROM chinook.Employees emp 
+JOIN chinook.Customers cust ON cust.SupportRepId = emp.EmployeeId
+JOIN chinook.Invoices Inv ON Inv.CustomerId = cust.CustomerId;
+
+7 Show the Invoice Total, Customer name, Country, and Sales Agent name for all invoices and customers.
+SELECT inv.Total
+, CONCAT(cust.FirstName,' ',cust.LastName) AS 'customers name'
+, cust.Country
+, inv.BillingCountry
+, CONCAT(emp.FirstName,' ',emp.LastName) AS 'employee name'
+FROM chinook.invoices inv
+JOIN chinook.customers cust ON inv.CustomerId = cust.CustomerId
+JOIN chinook.Employees emp ON cust.SupportRepId = emp.employeeId
+WHERE emp.Title LIKE '%Sales%'
+;
+
+8 How many Invoices were there in 2009?
+SELECT COUNT(InvoiceId)
+FROM chinook.invoices
+WHERE InvoiceDate LIKE '%2009%';
+
+9   What are the total sales for 2009?
+SELECT SUM(Total)
+FROM chinook.invoices
+WHERE InvoiceDate BETWEEN '2009-01-01' AND '2009-12-31'
+;
+
+10 Write a query that includes the purchased track name with each invoice line ID.
+ SELECT t.Name, inv_i.InvoiceLineId
+FROM chinook.tracks t
+JOIN chinook.invoice_items inv_i ON t.TrackId = inv_i.TrackId ;
+
+11 Write a query that includes the purchased track name AND artist name with each invoice line ID.
+SELECT t.Name
+, a.Name
+, inv_i.InvoiceLineId
+FROM chinook.tracks t
+JOIN chinook.Albums alb ON t.AlbumId = alb.AlbumId
+JOIN chinook.artists a ON alb.ArtistId = a.ArtistId
+JOIN chinook.invoice_items inv_i ON t.TrackId = inv_i.TrackId;
+
+12 Provide a query that shows all the Tracks, and include the Album name(AlbumId=AlbumId), Media type, and Genre(GenreId= genres.GenreId).
+SELECT t.TrackId
+, t.Name
+, alb.Title
+, me.Name as 'Media type'
+, gen.Name as 'Genre'
+FROM chinook.tracks t
+JOIN chinook.albums alb ON t.AlbumId = alb.AlbumId
+JOIN chinook.genres gen ON t.GenreId = gen.GenreId
+JOIN chinook.media_types me ON t.MediaTypeId = me.MediaTypeId
+;
+
+13. Show the total sales made by each sales agent. 
+SELECT CONCAT(emp.FirstName,' ' , emp.LastName) AS 'Fullname'
+, ROUND(SUM(iv.Total),2) AS 'Sales Total'
+
+FROM chinook.employees emp
+JOIN chinook.customers cust ON cust.SupportRepId = emp.EmployeeId
+
+JOIN chinook.invoices iv ON iv.CustomerId = cust.CustomerId
+WHERE emp.Title LIKE '%Sales%'
+GROUP BY emp.FirstName
+
+14.Which sales agent made the most dollars in sales in 2009?
+SELECT CONCAT(emp.FirstName,' ' , emp.LastName) AS 'Fullname'
+, ROUND(SUM(iv.Total),2) AS 'Sales Total'
+
+FROM chinook.employees emp
+JOIN chinook.customers cust ON cust.SupportRepId = emp.EmployeeId
+
+JOIN chinook.invoices iv ON iv.CustomerId = cust.CustomerId
+WHERE emp.Title LIKE '%Sales%'
+AND iv.InvoiceDate LIKE '%2009%'
+GROUP BY emp.FirstName
+ORDER BY emp.FirstName DESC LIMIT 1
